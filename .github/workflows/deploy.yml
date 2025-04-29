@@ -1,0 +1,25 @@
+name: Deploy to Elastic Beanstalk
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ASIA3BPZOGBQQCWPZCIA
+          aws-secret-access-key: j1RBOUNqGO6J9LSAS6WUeh1bXZajUpKoj9LGorya
+          aws-region: us-east-1
+
+      - name: Deploy to Elastic Beanstalk
+        run: |
+          aws elasticbeanstalk create-application-version --application-name mi-app --version-label ${{ github.sha }} --source-bundle S3Bucket=mi-bucket-s3,S3Key=mi-app.zip
+          aws elasticbeanstalk update-environment --environment-name mi-entorno --version-label ${{ github.sha }}
